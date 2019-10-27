@@ -3,7 +3,7 @@ import { Form, Icon, Input, Button,message } from 'antd';
 import {reqLogin} from "../../api";
 import {setUser} from "../../utils/userStore";
 
-import logo from './images/logo.png';
+import logo from '../../assets/images/logo.png';
 import './login.less';
 
 class Login extends Component{

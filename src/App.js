@@ -31,7 +31,7 @@ class App extends Component{
       return (
             <BrowserRouter>
                 <Switch>
-                    <ProtectRoute exact path="/" component={Admin}/>
+                    <ProtectRoute path="/" component={Admin}/>
                     <LoginRoute path="/login" component={Login}/>
                 </Switch>
             </BrowserRouter>
