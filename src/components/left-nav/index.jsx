@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Link,NavLink} from 'react-router-dom';
+import {NavLink,withRouter} from 'react-router-dom';
 import { Menu, Icon } from 'antd';
+import Menus from '../../config/menuConfig'
 
 import './index.less';
 import logo from '../../assets/images/logo.png';
-const { SubMenu } = Menu;
+const { SubMenu,Item } = Menu;
 
 
 class LeftNav extends Component{
@@ -12,54 +13,61 @@ class LeftNav extends Component{
         super(props);
         this.state = {
         }
+        console.log(this.props);
+
     }
-    render() {
-        return (
-            <div className={"left-nav"}>
-                <Link class="left-nav-header">
-                    <img src={logo} alt="logo"/>
-                    <h2>管理员后台</h2>
-                </Link>
-                <Menu
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
-                    mode="inline"
-                    theme="dark"
-                >
-                    <Menu.Item key="1">
-                        <NavLink to="/"><Icon type="home" /><span>首页</span></NavLink>
-                    </Menu.Item>
+    getMenuListNode = (menuList) => {
+        return menuList.map(item=>{
+            if (!item.children) {
+                return (
+                    <Item key={item.key}>
+                        <NavLink to={item.key}>
+                            <Icon type={item.icon} /><span>{item.title}</span>
+                        </NavLink>
+                    </Item>
+                )
+            } else {
+                return (
                     <SubMenu
-                        key="sub1"
+                        key={item.key}
                         title={
                             <span>
-                                <Icon type="shopping" />
-                                <span>商品</span>
+                                <Icon type={item.icon} />
+                                <span>{item.title}</span>
                             </span>
                         }
                     >
-                        <Menu.Item key="5">
-                            <NavLink to="/product">
-                                <Icon type="unordered-list" />
-                                <span>品类管理</span>
-                            </NavLink>
-                        </Menu.Item>
-                        <Menu.Item key="6">
-                                 <span>
-                                <Icon type="shop" />
-                                <span>商品管理</span>
-                            </span>
-                        </Menu.Item>
+                        {this.getMenuListNode(item.children)}
                     </SubMenu>
-                    <Menu.Item key="2">
-                        <NavLink to="/user"><Icon type="user" /><span>用户管理</span></NavLink>
-                    </Menu.Item>
-                    <Menu.Item key="3">
-                        <NavLink to="/role"><Icon type="solution" /><span>角色管理</span></NavLink>
-                    </Menu.Item>
+                )
+            }
+        })
+    }
+
+    render() {
+        const path = this.props.location.pathname;
+        return (
+            <div className={"left-nav"}>
+                <NavLink to='/' className="left-nav-header">
+                    <img src={logo} alt="logo"/>
+                    <h2>管理员后台</h2>
+                </NavLink>
+                <Menu
+                    selectedKeys={[path]}
+                    defaultOpenKeys={[]}
+                    mode="inline"
+                    theme="dark"
+                >
+                    {this.getMenuListNode(Menus)}
                 </Menu>
             </div>
         )
     }
 }
-export default LeftNav;
+
+/*
+withRouter高阶组件:
+包装非路由组件, 返回一个新的组件
+新的组件向非路由组件传递3个属性: history/location/match
+ */
+export default withRouter(LeftNav);

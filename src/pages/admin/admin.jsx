@@ -13,7 +13,7 @@ import Bar from '../charts/bar'
 import Line from '../charts/line'
 import Pie from '../charts/pie'
 // import NotFound from '../not-found/not-found'
-// import Order from '../order/order'
+import Order from '../order/order'
 
 const {  Footer, Sider, Content } = Layout;
 
@@ -42,6 +42,7 @@ class Admin extends Component{
                             <Route path="/charts/bar" component={Bar}/>
                             <Route path="/charts/pie" component={Pie}/>
                             <Route path="/charts/line" component={Line}/>
+                            <Route path="/order" component={Order}/>
                         </Switch>
                     </Content>
                     <Footer style={{textAlign: 'center', color: '#cccccc'}}>推荐使用谷歌浏览器，可以获得更佳页面操作体验</Footer>

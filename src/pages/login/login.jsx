@@ -33,7 +33,7 @@ class Login extends Component{
                 const {username,password} = values;
                 this.setState(state => ({isFetching: true}));
                 const ret = await reqLogin(username,password);
-                if (ret.status == 0) {
+                if (ret.status === 0) {
                     this.setState(state => ({isFetching: false}));
                     // 提示登陆成功
                     message.success('登陆成功');
