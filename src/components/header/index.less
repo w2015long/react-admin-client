@@ -1,4 +1,49 @@
 .header {
-  height: 80px;
-  background-color: aliceblue;
+    height: 80px;
+    background-color: aliceblue;
+
+    .admin-user {
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        border-bottom: 1px solid #1da57a;
+        .dropdown {
+            margin-left: 90%;
+        }
+    }
+
+    .weather-info {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        .weather-info-left {
+            position: relative;
+            width: 25%;
+            text-align: center;
+            font-size: 20px;
+            &::after {
+                position: absolute;
+                top: 99%;
+                left: 50%;
+                transform:translateX(-50%) ;
+                content: '';
+                width: 0;
+                height: 0;
+                border-right: 20px solid transparent;
+                border-left: 20px solid transparent;
+                border-top: 20px solid #fff;
+            }
+        }
+
+        .weather-info-right {
+            width: 75%;
+            text-align: right;
+            margin-right: 30px;
+            img {
+                margin: 0 15px;
+                width: 30px;
+                height: 20px;
+            }
+        }
+    }
 }

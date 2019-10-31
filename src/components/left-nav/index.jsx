@@ -11,12 +11,14 @@ const { SubMenu,Item } = Menu;
 class LeftNav extends Component{
     constructor (props) {
         super(props);
-        this.state = {
-        }
-        console.log(this.props);
-
+        this.state = {}
     }
+    componentWillMount() {//在第一次render之前 执行一次
+        this.menuNodes = this.getMenuListNode(Menus)
+    }
+
     getMenuListNode = (menuList) => {
+        const path = this.props.location.pathname;
         return menuList.map(item=>{
             if (!item.children) {
                 return (
@@ -27,6 +29,11 @@ class LeftNav extends Component{
                     </Item>
                 )
             } else {
+                //找到有打开子项目的SubMenu
+                var subItem = item.children.find(subItem => subItem.key === path);
+                if (subItem) {
+                    this.openKey = item.key
+                }
                 return (
                     <SubMenu
                         key={item.key}
@@ -45,7 +52,7 @@ class LeftNav extends Component{
     }
 
     render() {
-        const path = this.props.location.pathname;
+        const path = this.props.location.pathname
         return (
             <div className={"left-nav"}>
                 <NavLink to='/' className="left-nav-header">
@@ -54,11 +61,11 @@ class LeftNav extends Component{
                 </NavLink>
                 <Menu
                     selectedKeys={[path]}
-                    defaultOpenKeys={[]}
+                    defaultOpenKeys={[this.openKey]}
                     mode="inline"
                     theme="dark"
                 >
-                    {this.getMenuListNode(Menus)}
+                    {this.menuNodes}
                 </Menu>
             </div>
         )

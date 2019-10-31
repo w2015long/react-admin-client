@@ -31,7 +31,7 @@ class Admin extends Component{
                 </Sider>
                 <Layout>
                     <Header />
-                    <Content style={{background: '#fff', padding: 24, margin: 0, minHeight: 500,}}>
+                    <Content style={{background: '#fff', margin: 20, minHeight: 400}}>
                         <Switch>
                             <Redirect from='/' exact to='/home'/>
                             <Route path='/home' component={Home}/>
