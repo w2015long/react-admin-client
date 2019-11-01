@@ -1,5 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## 生命周期钩子
+<a href='http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/'>生命周期钩子详情<a/>
+
 ## Available Scripts
 
 In the project directory, you can run:
