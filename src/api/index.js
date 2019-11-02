@@ -19,6 +19,16 @@ export const reqWeather = (city) => {
     })
 }
 
+//获取一级或某个二级分类列表
+export const reqCategories = (parentId) => ajax({url:"/manage/category/list",data:{parentId}})
+
+//添加分类
+export const addCategory = (parentId,categoryName) => ajax({url:"/manage/category/add",method: "post",data:{parentId,categoryName}})
+
+//更新品类名称
+export const updateCategoryName = (categoryId,categoryName) => ajax({url:"/manage/category/update",method: "post",data:{categoryId,categoryName}})
+
+
 /*
 jsonp解决ajax跨域的原理
   1). jsonp只能解决GET类型的ajax请求跨域问题

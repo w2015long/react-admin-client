@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 import { Menu, Dropdown, Icon } from 'antd';
 import {reqWeather} from '../../api';
+import {getUser,removeUser} from "../../utils/userStore";
 import menuList from '../../config/menuConfig';
+import LinkButton from '../../components/link-button'
 import '../../utils';
 import './index.less'
-
-
 
 class Header extends Component{
     constructor (props) {
@@ -26,9 +26,13 @@ class Header extends Component{
         this.getWeather();
         this.getTimer();
     }
+    //卸载清除定时器
+    componentWillUnmount() {
+        clearInterval(this.intervalId)
+    }
 
     getTimer = () => {
-        setInterval(()=>{
+        this.intervalId = setInterval(()=>{
             this.setState({
                 currentTime:new Date().format('yyyy-MM-dd hh:mm:ss')
             })
@@ -51,6 +55,10 @@ class Header extends Component{
         });
         return title
     }
+    handleLogout = () => {
+        removeUser();
+        this.props.history.replace('/login')
+    }
 
     render() {
         const {dayPictureUrl,currentTime,weather} = this.state;
@@ -58,7 +66,7 @@ class Header extends Component{
         const menu = (
             <Menu onClick={this.handleLogout}>
                 <Menu.Item key="0">
-                    <a href="javascript:;"><Icon type="logout" />退出</a>
+                    <LinkButton><Icon type="logout" />退出</LinkButton>
                 </Menu.Item>
             </Menu>
         );
@@ -67,7 +75,7 @@ class Header extends Component{
                 <div className="admin-user">
                     <Dropdown overlay={menu} trigger={['click']} className="dropdown">
                         <span className="ant-dropdown-link">
-                            admin <Icon type="down" />
+                            {getUser()} <Icon type="down" />
                         </span>
                     </Dropdown>
                 </div>
