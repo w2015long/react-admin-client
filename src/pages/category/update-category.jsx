@@ -4,7 +4,7 @@ import { Form, Input, Select } from 'antd';
 const { Option } = Select;
 const {Item}  = Form;
 
-class AddCategory extends Component {
+class UpdateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {}
@@ -15,24 +15,12 @@ class AddCategory extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const {categories,parentId} = this.props
+        const {categoryName} = this.props
         return (
             <Form>
                 <Item>
-                    {getFieldDecorator('parentId', {
-                        initialValue:parentId
-                    })(<Select
-                    >
-                        <Option value="0" key='0'>一级分类</Option>
-                        {
-                            categories.map(item=><Option key={item._id} value={item._id}>{item.name}</Option>)
-                        }
-
-                    </Select>)}
-
-                </Item>
-                <Item>
                     {getFieldDecorator('categoryName', {
+                        initialValue:categoryName,
                         rules: [{ required: true, message: '请输入分类名称!' }],
                     })(<Input placeholder='请输入分类名称'/>)}
                 </Item>
@@ -41,10 +29,9 @@ class AddCategory extends Component {
     }
 }
 
-AddCategory.propTypes = {
-    categories: PropTypes.array.isRequired,
-    parentId: PropTypes.string.isRequired,
+UpdateForm.propTypes = {
+    categoryName: PropTypes.string.isRequired,
     getForm: PropTypes.func.isRequired
 };
 
-export default Form.create()(AddCategory);;
+export default Form.create()(UpdateForm);;

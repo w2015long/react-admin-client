@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Card ,Button,Table,Icon,message,Modal} from 'antd';
 import LinkButton from '../../components/link-button'
 import AddForm from './add-category';
+import UpdateForm from './update-category';
 import {reqCategories,addCategory,updateCategoryName} from '../../api';
 
 
@@ -29,7 +30,8 @@ class Category extends Component {
     getCategories = async (parentId) => {
         this.setState({loading:true})
         parentId = parentId || this.state.parentId;
-        const result = await reqCategories('0');
+        const result = await reqCategories(parentId);
+        console.log(result);
         if (result.status === 0) {
             this.setState({loading:false})
             const categories = result.data;
@@ -42,12 +44,19 @@ class Category extends Component {
             message.error('获取分类失败')
         }
     }
-    //显示指定一级分类对象的二子列表
-    showSubCategories = (category) => {
-        console.log(category);
+    // 显示指定一级分类列表
+    showCategories = () => {
         this.setState({
-            parentId: category._id,
-            parentName: category.name
+            parentId:'0',
+            parentName:'',
+            subCategories:[]
+        })
+    }
+    //显示指定一级分类对象的二子列表
+    showSubCategories = (id,name) => {
+        this.setState({
+            parentId: id,
+            parentName: name
         },()=>{
             this.getCategories()
         })
@@ -65,10 +74,10 @@ class Category extends Component {
                 width:300,
                 dataIndex: 'Action',
                 key: 'x',
-                render: (category) => (
+                render: (text,record) => (
                     <span>
-                        <LinkButton onClick={()=>{this.showSubCategories(category)}}>查看子分类</LinkButton>
-                        <LinkButton >修改分类</LinkButton>
+                        <LinkButton onClick={()=>{this.showSubCategories(record._id,record.name)}}>查看子分类</LinkButton>
+                        <LinkButton onClick={()=>{this.showUpdateModal(record._id,record.name)}}>修改分类</LinkButton>
                     </span>
                 ),
             }
@@ -80,16 +89,55 @@ class Category extends Component {
             modalStatus:1
         })
     }
+    //显示更新模态框
+    showUpdateModal = (categoryId,categoryName) => {
+        this.setState({
+            modalStatus:2
+        });
+        //保存当前要更新的分类数据
+        this.categoryId = categoryId;
+        this.categoryName =categoryName;
+    }
     //添加分类
-    addCategoryHandle = () => {
-        const {parentId,categoryName} = this.form.getFieldsValue();
-        this.hideModal();
-        const result = addCategory(parentId,categoryName);
-        if (result.status===0) {
+    addCategoryHandle =  () => {
+        this.form.validateFields(async (err, values) => {
+            if (!err) {
+                const {parentId,categoryName} = values;
+                this.hideModal();
+                const result = await addCategory(parentId,categoryName);
+                if (result.status===0) {
+                    // 添加的分类就是当前分类列表下的分类
+                    if (parentId===this.state.parentId) {
+                        //刷新当前列表
+                        this.getCategories();
+                    }//二级分类下添加一级分类 (获取一级分类但不更新页面)
+                    else if (parentId==='0') {
+                        this.getCategories('0');
+                    }
+                } else {
+                    message.error('添加分类失败')
+                }
+            }
+        });
 
-        } else {
-            message.error('添加分类失败')
-        }
+    }
+    //更新分类名称
+    updateCategory = () => {
+        this.form.validateFields(async (err,value)=>{
+            if (!err) {
+                const {categoryName} = value;
+                this.hideModal();
+                const result = await updateCategoryName(this.categoryId,categoryName);
+                if (result.status===0) {
+                    //刷新当前列表
+                    this.getCategories();
+                } else {
+                    message.error('更新分类名称失败')
+                }
+            }
+        })
+
+
     }
     //隐藏模态框
     hideModal = () => {
@@ -103,10 +151,17 @@ class Category extends Component {
 
 
     render() {
-        const {categories,loading,modalStatus,parentId,subCategories,parentName} = this.state;
+        const {
+            categories,
+            loading,
+            modalStatus,
+            parentId,
+            subCategories,
+            parentName
+        } = this.state;
         const title = parentId === '0' ? '一级分类':(
             <span>
-                <LinkButton>查看子分类</LinkButton>
+                <LinkButton onClick={this.showCategories}>一级分类列表</LinkButton>
                 <Icon type='arrow-right' style={{marginRight: 5}}/>
                 <span>{parentName}</span>
             </span>
@@ -150,7 +205,10 @@ class Category extends Component {
                     okText="确认"
                     cancelText="取消"
                 >
-                    <p>更新分类</p>
+                    <UpdateForm
+                        categoryName={this.categoryName}
+                        getForm={form => {this.form = form}}
+                    />
                 </Modal>
             </Card>
         )
