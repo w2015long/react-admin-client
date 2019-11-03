@@ -28,6 +28,20 @@ export const addCategory = (parentId,categoryName) => ajax({url:"/manage/categor
 //更新品类名称
 export const updateCategoryName = (categoryId,categoryName) => ajax({url:"/manage/category/update",method: "post",data:{categoryId,categoryName}})
 
+//获取商品分页列表
+export const reqProducts = (pageNum,pageSize) => ajax({url:"/manage/product/list",data:{pageNum,pageSize}})
+
+//根据ID/Name搜索产品分页列表
+export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) => ajax({url:"/manage/product/search",data:{pageNum,pageSize,[searchType]:searchName}})
+
+//对商品进行上架/下架处理
+export const reqUpdateStatus = (productId,status) => ajax({url:"/manage/product/updateStatus",data:{productId,status},method:'post'})
+
+
+
+
+
+
 
 /*
 jsonp解决ajax跨域的原理
