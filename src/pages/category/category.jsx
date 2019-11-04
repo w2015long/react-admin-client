@@ -76,7 +76,11 @@ class Category extends Component {
                 key: 'x',
                 render: (text,record) => (
                     <span>
-                        <LinkButton onClick={()=>{this.showSubCategories(record._id,record.name)}}>查看子分类</LinkButton>
+                        {
+                            this.state.parentId==='0'?
+                                <LinkButton onClick={()=>{this.showSubCategories(record._id,record.name)}}>查看子分类</LinkButton>
+                                :null
+                        }
                         <LinkButton onClick={()=>{this.showUpdateModal(record._id,record.name)}}>修改分类</LinkButton>
                     </span>
                 ),

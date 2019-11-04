@@ -5,6 +5,8 @@ import ProductHome from './home';
 import AddUpdate from './add-update';
 import ProductDetail from './detail';
 
+import './product.less'
+
 class Product extends Component {
     constructor(props) {
         super(props);

@@ -96,8 +96,8 @@ class Home extends Component {
                 key: 'x',
                 render: (text,record) => (
                     <div>
-                        <LinkButton onClick={()=>{this.showSubCategories(record._id,record.name)}}>详情</LinkButton>
-                        <LinkButton onClick={()=>{this.showUpdateModal(record._id,record.name)}}>编辑</LinkButton>
+                        <LinkButton onClick={()=>{this.props.history.push('/product/detail',record)}}>详情</LinkButton>
+                        <LinkButton onClick={()=>{this.props.history.push('/product/addupdate')}}>编辑</LinkButton>
                     </div>
                 ),
             }
