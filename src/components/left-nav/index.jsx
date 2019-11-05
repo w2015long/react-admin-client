@@ -30,7 +30,7 @@ class LeftNav extends Component{
                 )
             } else {
                 //找到有打开子项目的SubMenu
-                var subItem = item.children.find(subItem => subItem.key === path);
+                var subItem = item.children.find(subItem => path.indexOf(subItem.key) > -1);
                 if (subItem) {
                     this.openKey = item.key
                 }
@@ -52,7 +52,10 @@ class LeftNav extends Component{
     }
 
     render() {
-        const path = this.props.location.pathname
+        let path = this.props.location.pathname;
+        if (path.indexOf("/product") > -1) {
+            path = "/product"
+        }
         return (
             <div className={"left-nav"}>
                 <NavLink to='/' className="left-nav-header">
