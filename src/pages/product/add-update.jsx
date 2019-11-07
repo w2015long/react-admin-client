@@ -12,21 +12,54 @@ class AddUpdate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isUpdate:false,
-            options
+            options:[]
         }
     }
-    componentDidMount() {
-
+    componentWillMount() {
+        const product = this.props.location.state;
+        //保存更新标识
+        this.isUpdate = !!product;
+        this.product = product || {}
     }
+
+    componentDidMount() {
+        this.getCategoryOptions('0');
+    }
+    initOptions = async (categories) => {
+        const options = categories.map(c=>({
+            value: c._id,
+            label: c.name,
+            isLeaf: false
+        }));
+        // 如果是一个二级分类商品的更新
+        const {pCategoryId} = this.product;
+        if (this.isUpdate && pCategoryId !== '0') {
+            const cOptions = await this.getCategoryOptions(pCategoryId);
+            // 生成二级下拉列表的options
+            const childOptions = cOptions.map(c => ({
+                value: c._id,
+                label: c.name,
+                isLeaf: true
+            }));
+            // 找到当前商品对应的一级option对象
+           const targetOption = options.find(c=>c.value===pCategoryId);
+            // 二级分类关联对应的一级option上
+           targetOption.children = childOptions
+        }
+
+
+
+        this.setState({options})
+    }
+
     getCategoryOptions = async (parentId) => {
         const result = await reqCategories(parentId) // {status: 0, data: categorys}
         if (result.status === 0) {
             const categories = result.data;
             if (parentId === '0') {
-
+                this.initOptions(categories)
             } else {
-
+                return categories
             }
         }
 
@@ -36,41 +69,58 @@ class AddUpdate extends Component {
     /**
      *用加载下一级列表的回调函数
      */
-    loadData = selectedOptions => {
+    loadData = async selectedOptions => {
         const targetOption = selectedOptions[0];
+        //loading二级分类
         targetOption.loading = true;
+        const pId = targetOption.value;
+        const cOptions = await this.getCategoryOptions(pId);
 
-        // load options lazily
-        setTimeout(() => {
-            targetOption.loading = false;
-            targetOption.children = [
-                {
-                    label: `${targetOption.label} aaaaaa 1`,
-                    value: 'dynamic1',
-                },
-                {
-                    label: `${targetOption.label} bbbbb 2`,
-                    value: 'dynamic2',
-                },
-            ];
-            this.setState({
-                options: [...this.state.options],
-            });
-        }, 150);
+        targetOption.loading = false;
+        if (cOptions && cOptions.length > 0) {//有二级分类
+            const childOpts = cOptions.map(c=>({
+                value: c._id,
+                label: c.name,
+                isLeaf: true
+            }));
+            targetOption.children = childOpts
+        } else {//当前选中的分类没有二级分类
+            targetOption.isLeaf = true
+        }
+
+        // 更新options状态
+        this.setState({
+            options: [...this.state.options],
+        });
     }
 
     render() {
+        const {product,isUpdate} = this;
+        const {pCategoryId, categoryId} = product;
+        const categoryIds = [];
+        if (isUpdate) {
+            if (pCategoryId==='0') {
+                categoryIds.push(categoryId)
+            } else {
+                // 商品是一个二级分类的商品
+                categoryIds.push(pCategoryId)
+                categoryIds.push(categoryId)
+            }
+        }
+
+
+
         // 头部左侧标题
         const title = (
             <span>
                 <LinkButton onClick={() => this.props.history.goBack()}>
                     <Icon type='arrow-left' style={{fontSize: 20}}/>
                 </LinkButton>
-                <span>{'isUpdate' ? '修改商品' : '添加商品'}</span>
+                <span>{isUpdate ? '修改商品' : '添加商品'}</span>
             </span>
         );
         const {getFieldDecorator} = this.props.form;
-        // const {} = this.product
+
         return (
             <Card title={title}>
                 <Form
@@ -80,7 +130,7 @@ class AddUpdate extends Component {
                     <Item label="商品名称">
                         {
                             getFieldDecorator('name', {
-                                initialValue: 'product.name',
+                                initialValue: product.name,
                                 rules: [
                                     {required: true, message: '必须输入商品名称'}
                                 ]
@@ -90,7 +140,7 @@ class AddUpdate extends Component {
                     <Item label="商品描述">
                         {
                             getFieldDecorator('desc', {
-                                initialValue: 'product.name',
+                                initialValue: product.desc,
                                 rules: [
                                     {required: true, message: '必须输入商品描述'}
                                 ]
@@ -100,7 +150,7 @@ class AddUpdate extends Component {
                     <Item label="商品价格">
                         {
                             getFieldDecorator('price', {
-                                initialValue: 'price',
+                                initialValue: product.price,
                                 rules: [
                                     {required: true, message: '必须输入商品价格'}
                                 ]
@@ -114,17 +164,17 @@ class AddUpdate extends Component {
                     </Item>
                     <Item label="商品分类">
                         {
-                            // getFieldDecorator('categoryIds', {
-                            //     initialValue: '一级分类',
-                            //     rules: [
-                            //         {required: true, message: '必须指定商品分类'}
-                            //     ]
-                            // })()
-                            <Cascader
+                            getFieldDecorator('categoryIds', {
+                                initialValue: categoryIds,
+                                rules: [
+                                    {required: true, message: '必须指定商品分类'}
+                                ]
+                            })(<Cascader
                                 placeholder='请指定商品分类'
                                 options={this.state.options}/*需要显示的列表数据数组*/
                                 loadData={this.loadData}/*当选择某个列表项, 加载下一级列表的监听回调*/
-                            />
+                            />)
+
                         }
                     </Item>
                     <Item>

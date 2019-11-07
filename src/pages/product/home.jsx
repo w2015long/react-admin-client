@@ -97,7 +97,7 @@ class Home extends Component {
                 render: (text,record) => (
                     <div>
                         <LinkButton onClick={()=>{this.props.history.push('/product/detail',record)}}>详情</LinkButton>
-                        <LinkButton onClick={()=>{this.props.history.push('/product/addupdate')}}>编辑</LinkButton>
+                        <LinkButton onClick={()=>{this.props.history.push('/product/addupdate',record)}}>编辑</LinkButton>
                     </div>
                 ),
             }
