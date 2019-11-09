@@ -40,7 +40,11 @@ export const reqUpdateStatus = (productId,status) => ajax({url:"/manage/product/
 //根据分类ID获取分类
 export const reqCategory = (categoryId) => ajax({url:"/manage/category/info",data:{categoryId}})
 
+//删除图片 /manage/img/delete
+export const reqDelImg = (name) => ajax({url:"/manage/img/delete",data:{name},method:'post'})
 
+// 添加/修改商品
+export const reqAddOrUpdateProduct = (product) => ajax({url:`/manage/product/${product._id?'update':'add'}`,data:{product},method:'post'})
 
 
 
