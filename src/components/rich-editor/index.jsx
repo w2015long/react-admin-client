@@ -19,8 +19,8 @@ export default class EditorConvertToHTML extends Component {
         detail: PropTypes.string
     }
     //不能在static getDerivedStateFromProps函数中回填props中数据
-    //原因要用到this.simditor 在静态生命周期函数中拿不到this
-    //所以在componentDidUpdate函数中回填images数据
+    //原因要用到this.setState 在静态生命周期函数中拿不到this
+    //所以在componentDidUpdate函数中回填detail数据
     componentDidUpdate() {
         const html = this.props.detail;
         if (html && !this.state.isBackfill) {
