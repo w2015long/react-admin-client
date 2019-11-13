@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Card ,Table,Modal ,Button, message} from 'antd';
 import {PAGE_SIZE} from "../../utils/constants";
 import {reqRoles,reqAddRole, reqUpdateRoleAuth} from '../../api'
+import {getUser} from '../../utils/userStore'
 import AddForm from "./add-form";
 import AuthForm from "./auth-form";
 
@@ -11,54 +12,7 @@ class Role extends Component {
         this.state = {
             modalStatus:0,// 0:隐藏 1:显示添加角色 2:显示设置权限界面
             role:{},
-            roles:[
-                {
-                    "menus": [
-                        "/role",
-                        "/charts/bar",
-                        "/home",
-                        "/category"
-                    ],
-                    "_id": "5ca9eaa1b49ef916541160d3",
-                    "name": "测试",
-                    "create_time": 1554639521749,
-                    "__v": 0,
-                    "auth_time": 1558679920395,
-                    "auth_name": "test007"
-                },
-                {
-                    "menus": [
-                        "/role",
-                        "/charts/bar",
-                        "/home",
-                        "/charts/line",
-                        "/category",
-                        "/product",
-                        "/products"
-                    ],
-                    "_id": "5ca9eab0b49ef916541160d4",
-                    "name": "经理",
-                    "create_time": 1554639536419,
-                    "__v": 0,
-                    "auth_time": 1558506990798,
-                    "auth_name": "test008"
-                },
-                {
-                    "menus": [
-                        "/home",
-                        "/products",
-                        "/category",
-                        "/product",
-                        "/role"
-                    ],
-                    "_id": "5ca9eac0b49ef916541160d5",
-                    "name": "角色1",
-                    "create_time": 1554639552758,
-                    "__v": 0,
-                    "auth_time": 1557630307021,
-                    "auth_name": "admin"
-                }
-            ]
+            roles:[],
         }
     }
 
@@ -68,7 +22,7 @@ class Role extends Component {
     }
 
     componentDidMount() {
-        // this.getRoles()
+        this.getRoles()
     }
 
     initColumn = () => {
@@ -79,10 +33,12 @@ class Role extends Component {
             },
             {
                 title: '创建时间',
-                dataIndex: 'create_time'
+                dataIndex: 'create_time',
+                render: (text) => new Date(text).format('yyyy-MM-dd hh:mm:ss')
             },            {
                 title: '授权时间',
-                dataIndex: 'auth_time'
+                dataIndex: 'auth_time',
+                render:(auth_time) => new Date(auth_time).format('yyyy-MM-dd hh:mm:ss')
             },            {
                 title: '授权人',
                 dataIndex: 'auth_name'
@@ -90,6 +46,7 @@ class Role extends Component {
 
         ]
     }
+    //获取角色列表
     getRoles = async () =>{
         const result = await reqRoles()
         if (result.status===0) {
@@ -100,7 +57,7 @@ class Role extends Component {
         }
     }
 
-
+    //点击选中行
     onRow = (record,index) => {
         return {
             onClick: event => {// 点击行
@@ -108,7 +65,7 @@ class Role extends Component {
             },
         }
     }
-
+    //添加角色
     addRoleHandle = () => {
         this.form.validateFields(async (err, values) => {
             if (!err) {
@@ -132,10 +89,13 @@ class Role extends Component {
         })
     }
 
+    //更新权限信息
     updateRoleAuth = async () => {
         const menus = this.auth.getMenus();
         const {role} = this.state;
+        role.auth_time = Date.now();
         role.menus = menus;
+        role.auth_name = getUser();
         this.hideModal();
         const result = await reqUpdateRoleAuth(role);
         if (result.status===0) {

@@ -16,9 +16,12 @@ class AuthForm extends Component {
         this.treeNode = this.getTreeNode(menuList);
     }
 
-    componentWillReceiveProps (nextProps) {
-        console.log('componentWillReceiveProps()', nextProps)
-        const menus = nextProps.role.menus
+    // 根据新传入的role来更新checkedKeys状态
+    /*
+    当组件接收到新的属性时自动调用
+     */
+    componentWillReceiveProps(nextProps) {
+        const {menus} = nextProps.role;
         this.setState({
             checkedKeys: menus
         })
@@ -36,13 +39,16 @@ class AuthForm extends Component {
             return pre
         },[])
     }
+
     onCheck = checkedKeys => {
         this.setState({ checkedKeys });
-    };
+    }
+
 
     render() {
         const { name } = this.props.role;
-        const {checkedKeys} = this.state
+        const {checkedKeys} = this.state;
+
         return (
             <div>
                 <Item label="角色名称"
@@ -51,6 +57,7 @@ class AuthForm extends Component {
                     <Input value={name} disabled />
                 </Item>
                 <Tree
+                    checkable
                     defaultExpandAll={true}
                     onCheck={this.onCheck}
                     checkedKeys={checkedKeys}
