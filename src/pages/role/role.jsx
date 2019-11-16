@@ -17,7 +17,6 @@ class Role extends Component {
     }
 
     componentWillMount() {
-        console.log(this.form);
         this.initColumn()
     }
 

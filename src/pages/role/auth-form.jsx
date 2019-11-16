@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Tree } from 'antd';
 import menuList from '../../config/menuConfig';
@@ -7,7 +7,7 @@ import menuList from '../../config/menuConfig';
 const { TreeNode } = Tree;
 const {Item}  = Form;
 
-class AuthForm extends Component {
+class AuthForm extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -46,6 +46,7 @@ class AuthForm extends Component {
 
 
     render() {
+        console.log('auth_form:: render()')
         const { name } = this.props.role;
         const {checkedKeys} = this.state;
 

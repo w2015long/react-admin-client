@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import { Card,Form, Input,Cascader,Icon ,InputNumber,Button,message } from 'antd';
 import LinkButton from '../../components/link-button';
 import PicturesWall from '../../components/pictures-wall';
@@ -9,7 +9,7 @@ const {Item} = Form;
 const { TextArea } = Input;
 
 
-class AddUpdate extends Component {
+class AddUpdate extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -90,9 +90,9 @@ class AddUpdate extends Component {
         }
 
         // 更新options状态
-        this.setState({
-            options: [...this.state.options],
-        });
+        this.setState(state=>({
+            options: [...state.options]
+        }));
     }
     /*
     * 提交表单
@@ -135,6 +135,7 @@ class AddUpdate extends Component {
     }
 
     render() {
+        console.log("product add update render()");
         const {product,isUpdate} = this;
         const {pCategoryId, categoryId,imgs, detail} = product;
         const categoryIds = [];

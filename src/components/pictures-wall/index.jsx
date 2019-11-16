@@ -29,7 +29,7 @@ class PicturesWall extends React.Component {
         }
     }
     static getDerivedStateFromProps (props, state) {
-        const propsHasImg = props.imgs.length > 0
+        const propsHasImg = props.imgs && props.imgs.length > 0
         const stateNotImg = state.fileList.length == 0
         //state上fileLis没有值 并且props上的fileList有值(save组件传过来的)
         let fileList;
