@@ -55,6 +55,18 @@ export const reqAddRole = (roleName) => ajax({url:"/manage/role/add",data:{roleN
 //更新角色(给角色设置权限)
 export const reqUpdateRoleAuth = (role) => ajax({url:"/manage/role/update",data:role,method:'post'})
 
+//获取所有用户列表
+export const reqUsers = () => ajax({url:"/manage/user/list"})
+
+//删除用户
+export const reqDelUser = (userId) => ajax({url:"/manage/user/delete",data:{userId},method:'post'})
+
+//添加用户/更新用户
+export const reqAddUpdateUser = (user) => ajax({url:`/manage/user/${user._id?'update':'add'}`,data:user,method:'post'})
+
+
+
+
 
 /*
 jsonp解决ajax跨域的原理
