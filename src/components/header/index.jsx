@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
 import { Menu, Dropdown, Icon } from 'antd';
 import {reqWeather} from '../../api';
-import {getUser,removeUser} from "../../utils/userStore";
+import {getUser,removeUser,rmLS} from "../../utils/userStore";
 import menuList from '../../config/menuConfig';
 import LinkButton from '../../components/link-button'
+
 import '../../utils';
 import './index.less'
+
 
 class Header extends Component{
     constructor (props) {
@@ -57,6 +59,7 @@ class Header extends Component{
     }
     handleLogout = () => {
         removeUser();
+        rmLS('user')
         this.props.history.replace('/login')
     }
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Form, Icon, Input, Button,message } from 'antd';
 import {reqLogin} from "../../api";
-import {setUser} from "../../utils/userStore";
+import {setUser,setLS} from "../../utils/userStore";
 
 import logo from '../../assets/images/logo.png';
 import './login.less';
@@ -26,6 +26,8 @@ class Login extends Component{
             callback()
         }
     }
+
+    //登录
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields(async (err, values) => {
@@ -33,12 +35,15 @@ class Login extends Component{
                 const {username,password} = values;
                 this.setState(state => ({isFetching: true}));
                 const ret = await reqLogin(username,password);
+                console.log(ret);
                 if (ret.status === 0) {
                     this.setState(state => ({isFetching: false}));
                     // 提示登陆成功
                     message.success('登陆成功');
+                    const user = ret.data;
                     //保存用户登录状态
-                    setUser(ret.data.username);
+                    setUser(user.username);
+                    setLS('user',user)
                     //跳转首页
                     window.location.href = '/';
                 } else {
