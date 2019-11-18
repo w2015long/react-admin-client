@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Card ,Table,Modal ,Button, message} from 'antd';
 import {PAGE_SIZE} from "../../utils/constants";
 import {reqRoles,reqAddRole, reqUpdateRoleAuth} from '../../api'
-import {getUser} from '../../utils/userStore'
+import {getUser,getLS,rmLS,removeUser} from '../../utils/userStore'
 import AddForm from "./add-form";
 import AuthForm from "./auth-form";
 
@@ -64,6 +64,11 @@ class Role extends Component {
             },
         }
     }
+    //点击radio选中行
+    selectRadio = record => {
+        this.setState({role:record})
+    }
+
     //添加角色
     addRoleHandle = () => {
         this.form.validateFields(async (err, values) => {
@@ -98,10 +103,21 @@ class Role extends Component {
         this.hideModal();
         const result = await reqUpdateRoleAuth(role);
         if (result.status===0) {
-            message.success('更新角色权限成功');
-            this.setState(state=>({
-                roles:[...state.roles]
-            }))
+            const id = getLS('user').role_id
+            if (role._id === id) {
+                //退出登录(重新更新本地缓存权限信息)
+                removeUser();
+                rmLS('user')
+                this.props.history.replace('/login')
+                message.success('当前用户角色权限成功')
+            } else {
+                message.success('设置角色权限成功');
+                this.setState(state=>({
+                    roles:[...state.roles]
+                }))
+            }
+
+
         } else {
             message.error('更新角色权限失败')
         }
@@ -139,7 +155,8 @@ class Role extends Component {
                     }}
                     rowSelection={{
                         type:"radio",
-                        selectedRowKeys:[role._id]
+                        selectedRowKeys:[role._id],
+                        onSelect:this.selectRadio
                     }}
                     onRow={this.onRow}
                 />
