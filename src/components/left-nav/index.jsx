@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {NavLink,withRouter} from 'react-router-dom';
+import {connect} from 'react-redux'
 import { Menu, Icon } from 'antd';
 import Menus from '../../config/menuConfig'
 import {getLS,getUser} from "../../utils/userStore";
+import {setTitleAction} from "../../redux/actions";
 
 
 import './index.less';
@@ -49,10 +51,16 @@ class LeftNav extends Component{
         const path = this.props.location.pathname;
             return menuList.map(item=>{
                 if (this.hasAuth(item)) {
+
                     if (!item.children) {
+                        //保存刷新 同步title
+                        if (path === item.key || path.indexOf(item.key) > -1) {
+                            this.props.setTitleAction(item.title)
+                        }
+
                         return (
                             <Item key={item.key}>
-                                <NavLink to={item.key}>
+                                <NavLink to={item.key} onClick={()=>this.props.setTitleAction(item.title)}>
                                     <Icon type={item.icon} /><span>{item.title}</span>
                                 </NavLink>
                             </Item>
@@ -111,4 +119,7 @@ withRouter高阶组件:
 包装非路由组件, 返回一个新的组件
 新的组件向非路由组件传递3个属性: history/location/match
  */
-export default withRouter(LeftNav);
+export default connect(
+    state => ({}),
+    {setTitleAction}
+)(withRouter(LeftNav));

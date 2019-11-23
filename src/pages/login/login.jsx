@@ -45,7 +45,7 @@ class Login extends Component{
                     setUser(user.username);
                     setLS('user',user)
                     //跳转首页
-                    window.location.href = '/';
+                    window.location.href = '/home';
                 } else {
                     // 提示错误信息
                     message.error(ret.msg)

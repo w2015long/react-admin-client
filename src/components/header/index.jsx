@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux'
 import { Menu, Dropdown, Icon } from 'antd';
 import {reqWeather} from '../../api';
 import {getUser,removeUser,rmLS} from "../../utils/userStore";
@@ -65,7 +66,8 @@ class Header extends Component{
 
     render() {
         const {dayPictureUrl,currentTime,weather} = this.state;
-        const title = this.getTitle();
+        // const title = this.getTitle();
+        const title = this.props.headTitle;
         const menu = (
             <Menu onClick={this.handleLogout}>
                 <Menu.Item key="0">
@@ -96,4 +98,7 @@ class Header extends Component{
         )
     }
 }
-export default withRouter(Header);
+export default connect(
+    state => ({headTitle:state.headTitle}),
+    {}
+)(withRouter(Header));
