@@ -22,7 +22,7 @@ class App extends Component{
             <Route
                 render={()=>(
                     getUser()
-                        ? <Redirect to="/" />
+                        ? <Redirect to="/home" />
                         : <Component {...rest} />
                 )}
             />

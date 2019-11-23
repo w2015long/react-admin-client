@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {Card ,Table,Modal ,Button, message} from 'antd';
+import {connect} from 'react-redux'
 import {PAGE_SIZE} from "../../utils/constants";
 import {reqRoles,reqAddRole, reqUpdateRoleAuth} from '../../api'
-import {getUser,getLS,rmLS,removeUser} from '../../utils/userStore'
+import {resetUserAction} from '../../redux/actions'
+import {getUser,removeUser} from '../../utils/userStore'
 import AddForm from "./add-form";
 import AuthForm from "./auth-form";
 
@@ -103,11 +105,13 @@ class Role extends Component {
         this.hideModal();
         const result = await reqUpdateRoleAuth(role);
         if (result.status===0) {
-            const id = getLS('user').role_id
+            const id = this.props.user.role_id
             if (role._id === id) {
                 //退出登录(重新更新本地缓存权限信息)
                 removeUser();
-                rmLS('user')
+                //store  user 信息置空
+                this.props.resetUserAction();
+                // rmLS('user')
                 this.props.history.replace('/login')
                 message.success('当前用户角色权限成功')
             } else {
@@ -193,4 +197,9 @@ class Role extends Component {
     }
 }
 
-export default Role;
+export default connect(
+    state => ({
+        user:state.userInfor.user,
+    }),
+    {resetUserAction}
+)(Role);

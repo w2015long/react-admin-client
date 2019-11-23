@@ -3,7 +3,7 @@ import {NavLink,withRouter} from 'react-router-dom';
 import {connect} from 'react-redux'
 import { Menu, Icon } from 'antd';
 import Menus from '../../config/menuConfig'
-import {getLS,getUser} from "../../utils/userStore";
+import {getUser} from "../../utils/userStore";
 import {setTitleAction} from "../../redux/actions";
 
 
@@ -27,10 +27,11 @@ class LeftNav extends Component{
     /*
     params elem
      */
-    hasAuth = (elem) => {
+        hasAuth = (elem) => {
         const {key, isPublic} = elem;
-        const user = getLS('user');
-        console.log(user);
+
+        const user = this.props.user;
+
         const {menus} = user.role
         const username = getUser()
         // 1. elem在 当前用户菜单项里
@@ -120,6 +121,8 @@ withRouter高阶组件:
 新的组件向非路由组件传递3个属性: history/location/match
  */
 export default connect(
-    state => ({}),
+    state => ({
+        user:state.userInfor.user,
+    }),
     {setTitleAction}
 )(withRouter(LeftNav));

@@ -3,7 +3,8 @@ import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux'
 import { Menu, Dropdown, Icon } from 'antd';
 import {reqWeather} from '../../api';
-import {getUser,removeUser,rmLS} from "../../utils/userStore";
+import {getUser,removeUser} from "../../utils/userStore";
+import {resetUserAction} from '../../redux/actions'
 import menuList from '../../config/menuConfig';
 import LinkButton from '../../components/link-button'
 
@@ -60,7 +61,8 @@ class Header extends Component{
     }
     handleLogout = () => {
         removeUser();
-        rmLS('user')
+        // rmLS('user')
+        this.props.resetUserAction()
         this.props.history.replace('/login')
     }
 
@@ -100,5 +102,5 @@ class Header extends Component{
 }
 export default connect(
     state => ({headTitle:state.headTitle}),
-    {}
+    {resetUserAction}
 )(withRouter(Header));

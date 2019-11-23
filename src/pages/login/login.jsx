@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { Form, Icon, Input, Button,message } from 'antd';
-import {reqLogin} from "../../api";
-import {setUser,setLS} from "../../utils/userStore";
-
+import {Redirect} from 'react-router-dom'
+import { Form, Icon, Input, Button } from 'antd';
+import {connect} from 'react-redux'
+import {loginAction} from "../../redux/actions";
 import logo from '../../assets/images/logo.png';
 import './login.less';
 
@@ -10,7 +10,7 @@ class Login extends Component{
     constructor (props) {
         super(props);
         this.state = {
-            isFetching:false
+            // isFetching:false
         }
     }
     validatePwd = (rule, value, callback) => {
@@ -33,28 +33,19 @@ class Login extends Component{
         this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 const {username,password} = values;
-                this.setState(state => ({isFetching: true}));
-                const ret = await reqLogin(username,password);
-                console.log(ret);
-                if (ret.status === 0) {
-                    this.setState(state => ({isFetching: false}));
-                    // 提示登陆成功
-                    message.success('登陆成功');
-                    const user = ret.data;
-                    //保存用户登录状态
-                    setUser(user.username);
-                    setLS('user',user)
-                    //跳转首页
-                    window.location.href = '/home';
-                } else {
-                    // 提示错误信息
-                    message.error(ret.msg)
-                }
+                this.props.loginAction(username,password)
             }
         });
     };
 
     render() {
+
+        // 如果用户已经登陆, 自动跳转到管理界面
+        const user = this.props.user
+        if(user && user._id) {
+            return <Redirect to='/home'/>
+        }
+
         const { getFieldDecorator } = this.props.form;
         return (
             <div className="login">
@@ -98,7 +89,7 @@ class Login extends Component{
                                 type="primary"
                                 htmlType="submit"
                                 className="login-form-button"
-                                loading={this.state.isFetching}
+                                loading={this.props.isFetching}
                             >
                                 登录
                             </Button>
@@ -110,4 +101,10 @@ class Login extends Component{
     }
 }
 const LoginForm = Form.create()(Login);
-export default LoginForm;
+export default connect(
+    state => ({
+        user:state.userInfor.user,
+        isFetching:state.userInfor.isFetching
+    }),
+    {loginAction}
+)(LoginForm);
