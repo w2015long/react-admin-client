@@ -44,7 +44,7 @@ export const reqCategory = (categoryId) => ajax({url:"/manage/category/info",dat
 export const reqDelImg = (name) => ajax({url:"/manage/img/delete",data:{name},method:'post'})
 
 // 添加/修改商品
-export const reqAddOrUpdateProduct = (product) => ajax({url:`/manage/product/${product._id?'update':'add'}`,data:{product},method:'post'})
+export const reqAddOrUpdateProduct = (product) => ajax({url:`/manage/product/${product._id?'update':'add'}`,data:product,method:'post'})
 
 //获取角色列表
 export const reqRoles = () => ajax({url:"/manage/role/list"})
