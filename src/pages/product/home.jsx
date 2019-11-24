@@ -73,7 +73,6 @@ class Home extends Component {
             {
                 title: '状态',
                 dataIndex: 'status',
-                key: 'status',
                 render:(status,record)=>(
                     <span>
                         <Switch
@@ -92,12 +91,11 @@ class Home extends Component {
             {
                 title: '操作',
                 width:120,
-                dataIndex: 'Action',
-                key: 'x',
-                render: (text,record) => (
+                // dataIndex: 'Action',
+                render: (product) => (
                     <div>
-                        <LinkButton onClick={()=>{this.props.history.push('/product/detail',record)}}>详情</LinkButton>
-                        <LinkButton onClick={()=>{this.props.history.push('/product/addupdate',record)}}>编辑</LinkButton>
+                        <LinkButton onClick={()=>{this.props.history.push('/product/detail',product)}}>详情</LinkButton>
+                        <LinkButton onClick={()=>{this.props.history.push('/product/addupdate',product)}}>编辑</LinkButton>
                     </div>
                 ),
             }
