@@ -46,7 +46,7 @@ class Admin extends Component{
                             <Route component={NotFound}/>
                         </Switch>
                     </Content>
-                    <Footer style={{textAlign: 'center', color: '#cccccc'}}>推荐使用谷歌浏览器，可以获得更佳页面操作体验</Footer>
+                    <Footer style={{textAlign: 'center', color: '#cccccc'}}>{new Date().getFullYear() + "  推荐使用谷歌浏览器，可以获得更佳页面操作体验"}</Footer>
                 </Layout>
             </Layout>
         )
